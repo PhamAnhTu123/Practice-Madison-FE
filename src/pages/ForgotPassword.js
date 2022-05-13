@@ -3,10 +3,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -29,22 +26,16 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-const Login = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
+    await axios.post('http://localhost:8080/api/v1/users/forgot-password',{
       email: data.get('email'),
-      password: data.get('password'),
-    });
-    await axios.post('http://localhost:8080/api/v1/users/login',{
-      email: data.get('email'),
-      password: data.get('password'),
     }).then(res => {
-      localStorage.setItem('token', res.data.body.token)
-      navigate('/')
+      localStorage.setItem('verifyEmail', localStorage.getItem('verifyEmail'));
+      navigate('/reset-password')
     });
   };
 
@@ -63,7 +54,7 @@ const Login = () => {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Forgot Password
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -76,40 +67,14 @@ const Login = () => {
               autoComplete="email"
               autoFocus
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Reset Password
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="/forgot-password" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
@@ -118,4 +83,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default ForgotPassword

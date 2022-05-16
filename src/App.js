@@ -7,12 +7,14 @@ import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import Signup from "./pages/Signup";
 import Verify from "./pages/Verify";
+import Order from "./pages/Order";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
+        <Route path="/order" element={<Order/>}/>
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>

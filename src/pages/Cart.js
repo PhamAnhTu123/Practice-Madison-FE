@@ -6,6 +6,13 @@ import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,11 +26,6 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import { CardActionArea, Stack } from '@mui/material';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -51,15 +53,14 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const theme = createTheme();
 
-export default function Album() {
+export default function Cart() {
   const [user, setUser] = useState({});
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [category, setCategory] = useState(undefined);
-  const [sort, setSort] = useState(undefined);
   const [product, setProduct] = useState({});
   const [open, setOpen] = React.useState(false);
+  const [openCheckout, setOpenCheckout] = React.useState(false);
+  const [cartItems, setCartItems] = useState([]);
   const [quantity, setQuantity] = useState(0);
+  const [checkout, setCheckout] = useState('visa');
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -81,12 +82,14 @@ export default function Album() {
 
   const handleClickOpen = (pickedProduct) => {
     setProduct(pickedProduct);
+    setQuantity(pickedProduct.quantity)
     setOpen(true);
   };
 
+
   const handleAddToCart = async (item) => {
-    await axios.post('http://localhost:8080/api/v1/carts', {
-      productID: item.id,
+    await axios.put('http://localhost:8080/api/v1/carts', {
+      productID: item.product.id,
       quantity
     }, {
       headers: {
@@ -100,8 +103,60 @@ export default function Album() {
       }
     }).then(res => setUser(res.data.body.user));
 
+    await axios.get('http://localhost:8080/api/v1/users/me/carts', {
+      headers: {
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
+      }
+    }).then(res => setCartItems(res.data.body));
+
     setOpen(false);
     setQuantity(0);
+  }
+
+  const handleDeleteCart = async (item) => {
+    await axios.put('http://localhost:8080/api/v1/carts', {
+      productID: item.product.id,
+      quantity: 0
+    }, {
+      headers: {
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
+      }
+    });
+
+    await axios.get('http://localhost:8080/api/v1/users/me', {
+      headers: {
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
+      }
+    }).then(res => setUser(res.data.body.user));
+
+    await axios.get('http://localhost:8080/api/v1/users/me/carts', {
+      headers: {
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
+      }
+    }).then(res => setCartItems(res.data.body));
+
+    setOpen(false);
+    setQuantity(0);
+  }
+
+  const handleOrder = async () => {
+    const items = cartItems.map((item) => { return { productID: item.product.id, quantity: item.quantity } });
+    await axios.post('http://localhost:8080/api/v1/orders', {
+      items,
+      payment: checkout
+    }, {
+      headers: {
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
+      }
+    });
+
+    await axios.get('http://localhost:8080/api/v1/users/me/carts', {
+      headers: {
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
+      }
+    }).then(res => setCartItems(res.data.body));
+
+    setOpenCheckout(false)
   }
 
   const handleClose = () => {
@@ -109,23 +164,13 @@ export default function Album() {
     setQuantity(0);
   };
 
-  const getProductByCategory = async (id) => {
-    if (sort) {
-      await  axios.get(`http://localhost:8080/api/v1/products?category=${id}&order=${sort}`).then(res => setProducts(res.data.body));
-    } else {
-      await  axios.get(`http://localhost:8080/api/v1/products?category=${id}`).then(res => setProducts(res.data.body));
-    }
-    setCategory(id);
-  }
+  const handleCheckoutClose = () => {
+    setOpenCheckout(false);
+  };
 
-  const getProductBySort = async (type) => {
-    if (category) {
-      await  axios.get(`http://localhost:8080/api/v1/products?category=${category}&order=${type}`).then(res => setProducts(res.data.body));
-    } else {
-      await  axios.get(`http://localhost:8080/api/v1/products?&order=${type}`).then(res => setProducts(res.data.body));
-    }
-    setSort(type);
-  }
+  const handleChange = (event) => {
+    setCheckout(event.target.value);
+  };
 
   useEffect(() => {
     axios.get('http://localhost:8080/api/v1/users/me', {
@@ -134,9 +179,11 @@ export default function Album() {
       }
     }).then(res => setUser(res.data.body.user));
 
-    axios.get('http://localhost:8080/api/v1/products').then(res => setProducts(res.data.body));
-
-    axios.get('http://localhost:8080/api/v1/categories').then(res => setCategories(res.data.body));
+    axios.get('http://localhost:8080/api/v1/users/me/carts', {
+      headers: {
+        "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
+      }
+    }).then(res => setCartItems(res.data.body));
   }, [])
 
   return (
@@ -199,14 +246,14 @@ export default function Album() {
                   </MenuItem>
                 ))}
                 <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">Products</Typography>
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">Cart({user.cart ? user.cart.length : 0})</Typography>
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">Orders</Typography>
-                  </MenuItem>
+                  <Typography textAlign="center">Products</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">Cart({user.cart ? user.cart.length : 0})</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">Orders</Typography>
+                </MenuItem>
               </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -229,24 +276,24 @@ export default function Album() {
               LOGO
             </Typography>
             <Box sx={{ flexGrow: 4, display: { xs: 'none', md: 'flex' } }}>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  Products
-                </Button>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  Cart({user.cart ? user.cart.length : 0})
-                </Button>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  Orders
-                </Button>
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Products
+              </Button>
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Cart({user.cart ? user.cart.length : 0})
+              </Button>
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Orders
+              </Button>
             </Box>
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
@@ -281,26 +328,20 @@ export default function Album() {
         </Container>
       </AppBar>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{product.name}</DialogTitle>
+        <DialogTitle>{product.product ? product.product.name : null}</DialogTitle>
         <DialogContent>
-          <img style={{ height: '200px', width: '400px' }} src={product.thumbnail} alt={product.name}/>
+          <img style={{ height: '200px', width: '400px' }} src={product.product ? product.product.thumbnail : null} alt={product.name} />
           <Typography variant="caption" display="block" gutterBottom>
             Description:
           </Typography>
           <DialogContentText>
-            {product.description}
+            {product.product ? product.product.description : null}
           </DialogContentText>
-          <Typography variant="caption" display="block" gutterBottom>
-            Category:
-          </Typography>
-          <Typography variant="h6" gutterBottom component="div">
-            {product.category ? product.category.name : 'null'}
-          </Typography>
           <Typography variant="caption" display="block" gutterBottom>
             Price:
           </Typography>
           <Typography variant="h6" gutterBottom component="div">
-            {product.price} $
+            {product.product ? product.product.price : null} $
           </Typography>
           <TextField
             autoFocus
@@ -316,7 +357,37 @@ export default function Album() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={() => handleAddToCart(product)}>Add to Cart</Button>
+          <Button onClick={() => handleAddToCart(product)}>Update item</Button>
+          <Button variant="outlined" color="error" onClick={() => handleDeleteCart(product)}>Delete</Button>
+        </DialogActions>
+      </Dialog>
+      {/* /////////////////////// */}
+      <Dialog open={openCheckout} onClose={handleCheckoutClose}>
+        <DialogTitle>{product.product ? product.product.name : null}</DialogTitle>
+        <DialogContent>
+          <Typography variant="caption" display="block" gutterBottom>
+            Total:
+          </Typography>
+          <Typography variant="h6" gutterBottom component="div">
+          {cartItems.reduce((a, b) => a + b.quantity * b.product.price, 0)} $
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Payment method</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={checkout}
+              label="Payment method"
+              onChange={handleChange}
+            >
+              <MenuItem value={'visa'}>Visa</MenuItem>
+              <MenuItem value={'cash'}>Cash</MenuItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={() => handleOrder()}>Checkout</Button>
         </DialogActions>
       </Dialog>
       <main>
@@ -329,76 +400,41 @@ export default function Album() {
           }}
         >
           <Container maxWidth="lg">
-            <Typography textAlign='center' variant='h5' sx={{ color: 'red', fontWeight: 'bold', padding: 2 }} >
-              Our products
-            </Typography>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="flex-start"
-              spacing={2}
-            >
-              <Box sx={{ width: 200, marginBottom: 5 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Category</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Category"
-                >
+            <Typography variant="h4" gutterBottom component="div">mangage your cart</Typography>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Product name</TableCell>
+                    <TableCell align="right">Quantity</TableCell>
+                    <TableCell align="right">Unit price</TableCell>
+                    <TableCell align="right">Adjust</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {
-                    categories.map((category) => (
-                      <MenuItem onClick={() => getProductByCategory(category.id)} value={category.id}>{category.name}</MenuItem>
+                    cartItems.map((item) => (
+                      <TableRow
+                        key={item.id}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {item.product.name}
+                        </TableCell>
+                        <TableCell align="right">{item.quantity}</TableCell>
+                        <TableCell align="right">{item.product.price} $</TableCell>
+                        <TableCell align="right"><Button onClick={() => handleClickOpen(item)}>Action</Button></TableCell>
+                      </TableRow>
                     ))
                   }
-                </Select>
-              </FormControl>
-            </Box>
-            <Box sx={{ width: 200, marginBottom: 5 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Sort</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Sort"
-                >
-                  <MenuItem onClick={() => getProductBySort('name')} value='name'>Sort by name</MenuItem>
-                  <MenuItem onClick={() => getProductBySort('price')} value='price'>Sort by price</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            </Stack>
-            <Grid container spacing={2}>
-              {
-                products.map((product) => (
-                  <Grid key={product.id} item sm={3}>
-                    <Card sx={{ maxWidth: 345 }}>
-                      <CardActionArea>
-                        <CardMedia
-                          component="img"
-                          height="140"
-                          image={product.thumbnail}
-                          alt="green iguana"
-                        />
-                        <CardContent>
-                          <Typography gutterBottom variant="h5" component="div">
-                            {product.name}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {product.description}
-                          </Typography>
-                        </CardContent>
-                      </CardActionArea>
-                      <CardActions>
-                        <Button onClick={() => handleClickOpen(product)} size="small" color="primary">
-                          Add to cart
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))
-              }
-            </Grid>
+                  <TableRow>
+                    <TableCell colSpan={2}>Total</TableCell>
+                    <TableCell align="right">{cartItems.reduce((a, b) => a + b.quantity * b.product.price, 0)} $</TableCell>
+                    <TableCell align="right"><Button onClick={() => setOpenCheckout(true)}>Checkout</Button></TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Container>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="md">

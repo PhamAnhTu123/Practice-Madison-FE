@@ -8,12 +8,14 @@ import ResetPassword from "./pages/ResetPassword";
 import Signup from "./pages/Signup";
 import Verify from "./pages/Verify";
 import Order from "./pages/Order";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
+        <Route path="/profile" element={<Profile/>}/>
         <Route path="/order" element={<Order/>}/>
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/login" element={<Login/>}/>

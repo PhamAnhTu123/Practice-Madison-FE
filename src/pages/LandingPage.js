@@ -111,18 +111,18 @@ export default function Album() {
 
   const getProductByCategory = async (id) => {
     if (sort) {
-      await  axios.get(`http://localhost:8080/api/v1/products?category=${id}&order=${sort}`).then(res => setProducts(res.data.body));
+      await axios.get(`http://localhost:8080/api/v1/products?category=${id}&order=${sort}`).then(res => setProducts(res.data.body));
     } else {
-      await  axios.get(`http://localhost:8080/api/v1/products?category=${id}`).then(res => setProducts(res.data.body));
+      await axios.get(`http://localhost:8080/api/v1/products?category=${id}`).then(res => setProducts(res.data.body));
     }
     setCategory(id);
   }
 
   const getProductBySort = async (type) => {
     if (category) {
-      await  axios.get(`http://localhost:8080/api/v1/products?category=${category}&order=${type}`).then(res => setProducts(res.data.body));
+      await axios.get(`http://localhost:8080/api/v1/products?category=${category}&order=${type}`).then(res => setProducts(res.data.body));
     } else {
-      await  axios.get(`http://localhost:8080/api/v1/products?&order=${type}`).then(res => setProducts(res.data.body));
+      await axios.get(`http://localhost:8080/api/v1/products?&order=${type}`).then(res => setProducts(res.data.body));
     }
     setSort(type);
   }
@@ -199,14 +199,14 @@ export default function Album() {
                   </MenuItem>
                 ))}
                 <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">Products</Typography>
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">Cart({user.cart ? user.cart.length : 0})</Typography>
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">Orders</Typography>
-                  </MenuItem>
+                  <Typography textAlign="center">Products</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">Cart({user.cart ? user.cart.length : 0})</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">Orders</Typography>
+                </MenuItem>
               </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -229,29 +229,33 @@ export default function Album() {
               LOGO
             </Typography>
             <Box sx={{ flexGrow: 4, display: { xs: 'none', md: 'flex' } }}>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  Products
-                </Button>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  Cart({user.cart ? user.cart.length : 0})
-                </Button>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  Orders
-                </Button>
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Products
+              </Button>
+              <Button
+                href='/cart'
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Cart({user.cart ? user.cart.length : 0})
+              </Button>
+              <Button
+                href='/order'
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Orders
+              </Button>
             </Box>
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src={`${user.avatar}`} />
+                  <Button href='/profile'>
+                    <Avatar alt="Remy Sharp" src={`${user.avatar}`} />
+                  </Button>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -283,7 +287,7 @@ export default function Album() {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{product.name}</DialogTitle>
         <DialogContent>
-          <img style={{ height: '200px', width: '400px' }} src={product.thumbnail} alt={product.name}/>
+          <img style={{ height: '200px', width: '400px' }} src={product.thumbnail} alt={product.name} />
           <Typography variant="caption" display="block" gutterBottom>
             Description:
           </Typography>
@@ -339,34 +343,34 @@ export default function Album() {
               spacing={2}
             >
               <Box sx={{ width: 200, marginBottom: 5 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Category</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Category"
-                >
-                  {
-                    categories.map((category) => (
-                      <MenuItem onClick={() => getProductByCategory(category.id)} value={category.id}>{category.name}</MenuItem>
-                    ))
-                  }
-                </Select>
-              </FormControl>
-            </Box>
-            <Box sx={{ width: 200, marginBottom: 5 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Sort</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Sort"
-                >
-                  <MenuItem onClick={() => getProductBySort('name')} value='name'>Sort by name</MenuItem>
-                  <MenuItem onClick={() => getProductBySort('price')} value='price'>Sort by price</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Category"
+                  >
+                    {
+                      categories.map((category) => (
+                        <MenuItem onClick={() => getProductByCategory(category.id)} value={category.id}>{category.name}</MenuItem>
+                      ))
+                    }
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ width: 200, marginBottom: 5 }}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Sort</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Sort"
+                  >
+                    <MenuItem onClick={() => getProductBySort('name')} value='name'>Sort by name</MenuItem>
+                    <MenuItem onClick={() => getProductBySort('price')} value='price'>Sort by price</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
             </Stack>
             <Grid container spacing={2}>
               {

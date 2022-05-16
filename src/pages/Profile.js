@@ -363,7 +363,7 @@ export default function Profile() {
                   Save
                 </Button>
               </Box>
-              <Button variant='outlined' size='large'>
+              <Button href='/change-password' variant='outlined' size='large'>
                 Change Password
               </Button>
             </Stack>

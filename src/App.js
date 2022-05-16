@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import Verify from "./pages/Verify";
 import Order from "./pages/Order";
 import Profile from "./pages/Profile";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/profile" element={<Profile/>}/>
+        <Route path="/change-password" element={<ChangePassword/>}/>
         <Route path="/order" element={<Order/>}/>
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/login" element={<Login/>}/>

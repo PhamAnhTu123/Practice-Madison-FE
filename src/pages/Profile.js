@@ -302,7 +302,6 @@ export default function Profile() {
                 />
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   name="fullname"
                   value={user.fullname}
@@ -323,7 +322,6 @@ export default function Profile() {
                 />
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   name="phone"
                   value={user.phone}
@@ -334,7 +332,6 @@ export default function Profile() {
                 />
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   name="gender"
                   value={user.gender}
@@ -345,7 +342,6 @@ export default function Profile() {
                 />
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   name="address"
                   value={user.address}

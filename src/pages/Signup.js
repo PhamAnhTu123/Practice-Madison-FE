@@ -45,8 +45,8 @@ const Signup = () => {
       username: data.get('username'),
       password: data.get('password'),
     }).then(res => {
-      localStorage.setItem('verifyEmail', res.data.body.email);
-      navigate('/')
+      localStorage.setItem('verifyEmail', data.get('email'));
+      navigate('/verify')
     });
   };
 

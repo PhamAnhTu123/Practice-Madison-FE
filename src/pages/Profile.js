@@ -252,7 +252,7 @@ export default function Profile() {
             pb: 6,
           }}
         >
-          <Container maxWidth="md">
+          <Container maxWidth="lg">
             <Typography textAlign='center' variant='h5' sx={{ fontWeight: 'bold', padding: 2 }} >
               Profile
             </Typography>
@@ -260,13 +260,13 @@ export default function Profile() {
               direction="row"
               justifyContent="space-around"
               alignItems="center"
-              spacing={4}
+              spacing={3}
             >
               <Container>
                 <Avatar
                   alt="Remy Sharp"
                   src={user.avatar}
-                  sx={{ width: 80, height: 80 }}
+                  sx={{ width: 200, height: 200 }}
                 />
                 <Box component="form" onSubmit={handleSubmitAvatar} noValidate sx={{ mt: 1 }}>
                   <TextField
@@ -274,7 +274,6 @@ export default function Profile() {
                     required
                     fullWidth
                     name="file"
-                    label="Avatar"
                     type="file"
                     id="avatar"
                   />
@@ -359,7 +358,7 @@ export default function Profile() {
                   Save
                 </Button>
               </Box>
-              <Button href='/change-password' variant='outlined' size='large'>
+              <Button href='/change-password' variant='outlined' size='extra-large'>
                 Change Password
               </Button>
             </Stack>

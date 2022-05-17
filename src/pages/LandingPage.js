@@ -391,6 +391,9 @@ export default function Album() {
                           <Typography variant="body2" color="text.secondary">
                             {product.description}
                           </Typography>
+                          <Typography variant="caption" display="block">
+                            Available: {product.storage}
+                          </Typography>
                         </CardContent>
                       </CardActionArea>
                       <CardActions>

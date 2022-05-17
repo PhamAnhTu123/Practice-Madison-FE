@@ -196,12 +196,14 @@ export default function Order() {
             </Typography>
             <Box sx={{ flexGrow: 4, display: { xs: 'none', md: 'flex' } }}>
               <Button
+                href='/'
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 Products
               </Button>
               <Button
+                href='/cart'
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >

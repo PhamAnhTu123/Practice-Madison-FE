@@ -277,6 +277,7 @@ export default function Cart() {
             </Typography>
             <Box sx={{ flexGrow: 4, display: { xs: 'none', md: 'flex' } }}>
               <Button
+                href='/'
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
@@ -289,6 +290,7 @@ export default function Cart() {
                 Cart({user.cart ? user.cart.length : 0})
               </Button>
               <Button
+              href='/order'
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >

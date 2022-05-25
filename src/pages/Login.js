@@ -43,9 +43,13 @@ const Login = () => {
       email: data.get('email'),
       password: data.get('password'),
     }).then(res => {
-      localStorage.setItem('token', res.data.body.token)
-      navigate('/')
-    });
+      if (res.status === 400) {
+        window.alert('Wrong Password or something, idk lol');
+      } else {
+        localStorage.setItem('token', res.data.body.token)
+        navigate('/')
+      }
+    }).catch(err => window.alert('Wrong password or something, idk Lol'));
   };
 
   return (

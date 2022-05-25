@@ -95,7 +95,7 @@ export default function Cart() {
       headers: {
         "Authorization": `Bearer ${window.localStorage.getItem('token')}`,
       }
-    });
+    }).catch(err => window.alert('Quantity much not biger than available storage'));
 
     await axios.get('http://localhost:8080/api/v1/users/me', {
       headers: {

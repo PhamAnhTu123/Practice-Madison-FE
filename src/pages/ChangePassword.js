@@ -35,8 +35,8 @@ const ChangePassword = () => {
     if (data.get('newPassword') !== data.get('comparePassword')) {
       window.alert('new passwords dont match');
       window.location.reload();
-    }
-    await axios.put('http://localhost:8080/api/v1/users/change-password',{
+    } else {
+      await axios.put('http://localhost:8080/api/v1/users/change-password',{
       password: data.get('password'),
       newPassword: data.get('newPassword'),
     }, {
@@ -46,6 +46,7 @@ const ChangePassword = () => {
     }).then(res => {
       navigate('/profile')
     });
+    }
   };
 
   return (

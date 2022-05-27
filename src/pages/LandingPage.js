@@ -21,7 +21,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
-import { CardActionArea, Stack } from '@mui/material';
+import { CardActionArea, Stack, Chip } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Dialog from '@mui/material/Dialog';
@@ -287,7 +287,7 @@ export default function Album() {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{product.name}</DialogTitle>
         <DialogContent>
-          <img style={{ height: '200px', width: '400px' }} src={product.thumbnail} alt={product.name} />
+          <img style={{ height: '200px', width: '400px' }} src={product.images ? product.images[0].url : 'adsadadwddaw'} alt={product.name} />
           <Typography variant="caption" display="block" gutterBottom>
             Description:
           </Typography>
@@ -298,7 +298,9 @@ export default function Album() {
             Category:
           </Typography>
           <Typography variant="h6" gutterBottom component="div">
-            {product.category ? product.category.name : 'null'}
+            {product.categories ? product.categories.map(item => (
+              <Chip label={item.name} color="primary" variant="outlined" />
+            )) : 'null'}
           </Typography>
           <Typography variant="caption" display="block" gutterBottom>
             Price:
@@ -381,7 +383,7 @@ export default function Album() {
                         <CardMedia
                           component="img"
                           height="140"
-                          image={product.thumbnail}
+                          image={product.images[0].url}
                           alt="green iguana"
                         />
                         <CardContent>

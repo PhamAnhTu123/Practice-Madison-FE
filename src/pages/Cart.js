@@ -140,7 +140,7 @@ export default function Cart() {
   }
 
   const handleOrder = async () => {
-    const items = cartItems.map((item) => { return { productID: item.product.id, quantity: item.quantity } });
+    const items = cartItems.map((item) => { return { productID: item.product.id, quantity: item.quantity, price: item.product.price } });
     await axios.post('http://localhost:8080/api/v1/orders', {
       items,
       payment: checkout
@@ -332,7 +332,7 @@ export default function Cart() {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{product.product ? product.product.name : null}</DialogTitle>
         <DialogContent>
-          <img style={{ height: '200px', width: '400px' }} src={product.product ? product.product.thumbnail : null} alt={product.name} />
+          <img style={{ height: '200px', width: '400px' }} src={product.product ? product.product.images[0].url : null} alt={product.name} />
           <Typography variant="caption" display="block" gutterBottom>
             Description:
           </Typography>

@@ -239,7 +239,7 @@ export default function Order() {
                             <CardMedia
                               component="img"
                               height="140"
-                              image={item.product.thumbnail}
+                              image={item.product.images[0].url}
                               alt="green iguana"
                             />
                             <CardContent>
@@ -250,7 +250,7 @@ export default function Order() {
                                 Quantity: {item.quantity}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
-                                Unit price: {item.product.price}
+                                Unit price: {item.price}
                               </Typography>
                             </CardContent>
                           </CardActionArea>
@@ -337,7 +337,7 @@ export default function Order() {
                       <CardMedia
                         component="img"
                         sx={{ width: 151, height: 131 }}
-                        image={order.items ? order.items[0].product.thumbnail : 'null'}
+                        image={order.items ? order.items[0].product.images[0].url : 'null'}
                         alt="Live from space album cover"
                       />
                       <Box sx={{ display: 'flex', flexDirection: 'column' }}>

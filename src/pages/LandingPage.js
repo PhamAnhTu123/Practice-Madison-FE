@@ -21,7 +21,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
-import { CardActionArea, Stack, Chip } from '@mui/material';
+import { CardActionArea, Stack, Chip, Pagination } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Dialog from '@mui/material/Dialog';
@@ -53,7 +53,7 @@ const theme = createTheme();
 
 export default function Album() {
   const [user, setUser] = useState({});
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState({});
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(undefined);
   const [sort, setSort] = useState(undefined);
@@ -138,6 +138,8 @@ export default function Album() {
 
     axios.get('http://localhost:8080/api/v1/categories').then(res => setCategories(res.data.body));
   }, [])
+
+  console.log(products);
 
   return (
     <ThemeProvider theme={theme}>
@@ -376,7 +378,7 @@ export default function Album() {
             </Stack>
             <Grid container spacing={2}>
               {
-                products.map((product) => (
+                products.rows ? products.rows.map((product) => (
                   <Grid key={product.id} item sm={3}>
                     <Card sx={{ maxWidth: 345 }}>
                       <CardActionArea>
@@ -405,9 +407,12 @@ export default function Album() {
                       </CardActions>
                     </Card>
                   </Grid>
-                ))
+                )) : null
               }
             </Grid>
+            <Stack sx={{ marginTop: 2 }} spacing={2}>
+              <Pagination count={Math.ceil(products.count/5)} color="primary" />
+            </Stack>
           </Container>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="md">

@@ -7,7 +7,6 @@ import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -27,15 +26,13 @@ function Copyright(props) {
 const theme = createTheme();
 
 const ForgotPassword = () => {
-  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     await axios.post('http://localhost:8080/api/v1/users/forgot-password',{
       email: data.get('email'),
     }).then(res => {
-      localStorage.setItem('verifyEmail', localStorage.getItem('verifyEmail'));
-      navigate('/reset-password')
+      window.alert('Check your email')
     });
   };
 
